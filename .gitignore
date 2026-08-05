@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.env
+*.egg-info/
+.DS_Store
+models/
+.ipynb_checkpoints/
+*.pt
+*.bin
+*.safetensors
