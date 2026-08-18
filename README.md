@@ -1,5 +1,3 @@
-# careinsight-ai
-AI-powered patient feedback analyser using NLP, MedGemma and LangChain
 # 🏥 CareInsight AI — Patient Feedback Intelligence Platform
 
 [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://python.org)
@@ -44,7 +42,7 @@ clinical insights using three NLP techniques:
 ---
 
 ## 🏗️ Project structure
-
+```
 careinsight-ai/
 ├── src/
 │ ├── sentiment.py # RoBERTa sentiment analysis
@@ -61,14 +59,14 @@ careinsight-ai/
 ├── app.py # Gradio web application
 └── requirements.txt # All dependencies
 
-
 ---
+```
 
 ## ⚙️ Installation
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOURUSERNAME/careinsight-ai.git
+git clone https://github.com/jayashree-28/careinsight-ai.git
 cd careinsight-ai
 
 # Create conda environment
@@ -106,6 +104,7 @@ python3 -m pytest tests/ -v
 ---
 
 ## 🤖 Models used
+```
 
 | Model | Size | Purpose |
 |---|---|---|
@@ -115,6 +114,7 @@ python3 -m pytest tests/ -v
 | Falconsai/medical_summarization | 242MB | Medical summarisation |
 
 ---
+```
 
 ## 📈 Dataset
 

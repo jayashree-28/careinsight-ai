@@ -8,3 +8,5 @@ models/
 *.pt
 *.bin
 *.safetensors
+hf-careinsight/
+hf-careinsight/
