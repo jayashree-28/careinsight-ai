@@ -29,7 +29,7 @@ clinical insights using three NLP techniques:
 
 ## 🚀 Try it live
 
-> **[🤗 Open in Hugging Face Spaces](#)** ← link coming soon
+> **[🤗 Open in Hugging Face Spaces](https://huggingface.co/spaces/JayaBV/careinsight-ai)**
 
 ---
 
