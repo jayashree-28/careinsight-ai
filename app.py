@@ -1,7 +1,26 @@
 # app.py
+# spaces is only available on Hugging Face Spaces — must be imported
+# before torch/transformers when present
+try:
+    import spaces
+    HF_SPACES = True
+except ImportError:
+    HF_SPACES = False
+
+    class _DummySpaces:
+        """Fallback so @spaces.GPU is a no-op when running locally."""
+        @staticmethod
+        def GPU(*args, **kwargs):
+            def decorator(fn):
+                return fn
+            return decorator
+
+    spaces = _DummySpaces()
+
 import gradio as gr
 import pandas as pd
 import plotly.express as px
+
 from src.sentiment import analyse_sentiment
 from src.summariser import clean_text, load_summariser, summarise_general
 from src.medgemma import load_medical_model, summarise_medical
@@ -14,93 +33,8 @@ med_tokenizer, med_model = load_medical_model()
 print("✅ All models loaded — launching app!")
 
 
-# ── Core analysis function ───────────────────────────────────
-def analyse_reviews(text_input: str, condition: str):
-    """
-    Main function called by Gradio UI.
-    Takes raw text input → returns all analysis results.
-    """
-    if not text_input or len(text_input.strip()) < 10:
-        return (
-            "⚠️ Please enter at least one patient review.",
-            "", "", "", "", None
-        )
-
-    # Split input into individual reviews
-    reviews = [r.strip() for r in text_input.strip().split("\n")
-               if r.strip()]
-    reviews = [clean_text(r) for r in reviews]
-
-    # 1. Sentiment analysis
-    combined = " ".join(reviews)[:512]
-    sentiment = analyse_sentiment(combined)
-    sentiment_label = sentiment["label"].upper()
-    sentiment_score = sentiment["score"]
-
-    # Sentiment emoji
-    emoji = {"positive": "😊", "negative": "😟", "neutral": "😐"}
-    sentiment_display = (
-        f"{emoji.get(sentiment['label'], '😐')} "
-        f"{sentiment_label} "
-        f"({sentiment_score * 100:.1f}% confidence)"
-    )
-
-    # 2. Topic extraction
-    topics = extract_top_keywords(reviews)
-    topics_display = "\n".join([f"• {t}" for t in topics])
-
-    # 3. General summary
-    general_summary = summarise_general(
-        reviews, gen_tokenizer, gen_model
-    )
-
-    # 4. Medical summary
-    medical_summary = summarise_medical(
-        reviews, med_tokenizer, med_model
-    )
-
-    # 5. Topic chart
-    topic_fig = create_topic_chart(topics, condition)
-
-    return (
-        sentiment_display,
-        topics_display,
-        general_summary,
-        medical_summary,
-        topic_fig
-    )
-
-
-def analyse_from_dataset(condition: str, n_reviews: int):
-    """
-    Load reviews directly from dataset by condition.
-    """
-    try:
-        df = pd.read_csv(
-            "data/drugsComTrain_raw.csv",
-            sep=",",
-            on_bad_lines="skip",
-            encoding="utf-8"
-        )
-        reviews = (df[df["condition"] == condition]["review"]
-                   .dropna()
-                   .head(n_reviews)
-                   .tolist())
-
-        if not reviews:
-            return "No reviews found for this condition.", "", "", "", None
-
-        reviews_text = "\n".join(reviews)
-        return analyse_reviews(reviews_text, condition)
-
-    except Exception as e:
-        return f"Error loading dataset: {str(e)}", "", "", "", None
-
-
 def create_topic_chart(topics: list, condition: str):
-    """
-    Create Plotly bar chart of topics.
-    """
+    """Create Plotly bar chart of topics."""
     fig = px.bar(
         x=topics,
         y=[1] * len(topics),
@@ -117,11 +51,84 @@ def create_topic_chart(topics: list, condition: str):
     return fig
 
 
+@spaces.GPU(duration=120)
+def analyse_reviews(text_input: str, condition: str):
+    """
+    Main analysis function — sentiment, topics, and both summaries.
+    """
+    if not text_input or len(text_input.strip()) < 10:
+        return (
+            "⚠️ Please enter at least one patient review.",
+            "", "", "", None
+        )
+
+    # Split input into individual reviews
+    reviews = [r.strip() for r in text_input.strip().split("\n")
+               if r.strip()]
+    reviews = [clean_text(r) for r in reviews]
+
+    # 1. Sentiment analysis
+    combined = " ".join(reviews)[:512]
+    sentiment = analyse_sentiment(combined)
+    emoji = {"positive": "😊", "negative": "😟", "neutral": "😐"}
+    sentiment_display = (
+        f"{emoji.get(sentiment['label'], '😐')} "
+        f"{sentiment['label'].upper()} "
+        f"({sentiment['score'] * 100:.1f}% confidence)"
+    )
+
+    # 2. Topic extraction
+    topics = extract_top_keywords(reviews)
+    topics_display = "\n".join([f"• {t}" for t in topics])
+
+    # 3. General summary
+    general_summary = summarise_general(reviews, gen_tokenizer, gen_model)
+
+    # 4. Medical summary
+    medical_summary = summarise_medical(reviews, med_tokenizer, med_model)
+
+    # 5. Topic chart
+    topic_fig = create_topic_chart(topics, condition)
+
+    return (
+        sentiment_display,
+        topics_display,
+        general_summary,
+        medical_summary,
+        topic_fig
+    )
+
+
+def analyse_from_dataset(condition: str, n_reviews: int):
+    """Load reviews directly from the dataset by condition."""
+    try:
+        df = pd.read_csv(
+            "data/drugsComTrain_raw.csv",
+            sep=",",
+            on_bad_lines="skip",
+            encoding="utf-8"
+        )
+        reviews = (df[df["condition"] == condition]["review"]
+                   .dropna()
+                   .head(n_reviews)
+                   .tolist())
+
+        if not reviews:
+            return "No reviews found for this condition.", "", "", "", None
+
+        return analyse_reviews("\n".join(reviews), condition)
+
+    except FileNotFoundError:
+        return (
+            "⚠️ Dataset not found. Use the 'Analyse Your Text' tab instead.",
+            "", "", "", None
+        )
+    except Exception as e:
+        return f"Error loading dataset: {str(e)}", "", "", "", None
+
+
 # ── Gradio UI ────────────────────────────────────────────────
-with gr.Blocks(
-    title="CareInsight AI",
-    theme=gr.themes.Soft()
-) as app:
+with gr.Blocks(title="CareInsight AI", theme=gr.themes.Soft()) as app:
 
     gr.Markdown("""
     # 🏥 CareInsight AI
@@ -190,6 +197,24 @@ with gr.Blocks(
                 ]
             )
 
+            gr.Examples(
+                examples=[
+                    [
+                        "I have been taking Zoloft for 3 months now.\n"
+                        "The side effects were bad at first but improved over time.\n"
+                        "I feel much better and less anxious overall.",
+                        "Depression"
+                    ],
+                    [
+                        "This medication caused severe nausea and dizziness.\n"
+                        "I had to stop taking it after only two weeks.\n"
+                        "My doctor switched me to something else.",
+                        "Pain"
+                    ],
+                ],
+                inputs=[text_input, condition_input]
+            )
+
         # ── Tab 2: Dataset Analysis ──────────────────────────
         with gr.Tab("📊 Analyse by Condition"):
             gr.Markdown("### Analyse reviews from the UCI Drug Review dataset")
@@ -199,7 +224,7 @@ with gr.Blocks(
                     label="Select Condition",
                     choices=[
                         "Depression", "Anxiety", "Pain",
-                        "Birth Control", "Diabetes",
+                        "Birth Control", "Diabetes, Type 2",
                         "High Blood Pressure", "Insomnia"
                     ],
                     value="Depression"
@@ -258,7 +283,7 @@ with gr.Blocks(
             gr.Markdown("""
             ## About CareInsight AI
 
-            **CareInsight AI** is an AI-powered patient feedback 
+            **CareInsight AI** is an AI-powered patient feedback
             intelligence platform built for healthcare providers.
 
             ### Models Used
@@ -270,20 +295,18 @@ with gr.Blocks(
             | Medical Summary | Falconsai Medical | Clinical summary |
 
             ### Tech Stack
-            Python • Hugging Face Transformers • BERTopic • 
+            Python • Hugging Face Transformers • BERTopic •
             LangChain • Gradio • Plotly • pytest • Great Expectations
 
             ### Dataset
             UCI Drug Review Dataset — 161,297 real patient reviews
 
-            ### Built by
-            SDET transitioning into AI/ML Engineering
+            ### Testing
+            29 automated tests covering sentiment output schema,
+            topic extraction, pipeline integration, and data quality
+            validation.
             """)
 
 # ── Launch ───────────────────────────────────────────────────
 if __name__ == "__main__":
-    app.launch(
-        share=False,
-        server_name="0.0.0.0",
-        server_port=7860
-    )
+    app.launch()
