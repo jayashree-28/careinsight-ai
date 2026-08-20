@@ -10,3 +10,4 @@ models/
 *.safetensors
 hf-careinsight/
 hf-careinsight/
+gx/
