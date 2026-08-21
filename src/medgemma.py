@@ -1,4 +1,3 @@
-```python
 # src/medgemma.py
 
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
@@ -184,4 +183,3 @@ if __name__ == "__main__":
         print(f"\n{'—' * 60}")
 
     print("\nComparison complete!")
-```
