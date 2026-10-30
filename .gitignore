@@ -1,13 +1,41 @@
+
+# Python cache
 __pycache__/
 *.py[cod]
-.env
 *.egg-info/
+.pytest_cache/
+
+# Environment variables
+.env
+.env.*
+
+# Virtual environments
+.venv/
+venv/
+
+# macOS
 .DS_Store
+
+# Model files and artifacts
 models/
-.ipynb_checkpoints/
 *.pt
 *.bin
 *.safetensors
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Hugging Face deployment repository
 hf-careinsight/
-hf-careinsight/
+
+# Great Expectations
 gx/
+
+# Local datasets
+data/
+
+# Generated test artifacts
+tests/runs/
+
+# Local test output
+baseline_test_results.txt
