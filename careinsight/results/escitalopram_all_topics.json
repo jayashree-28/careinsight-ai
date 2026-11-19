@@ -1,0 +1,71 @@
+{
+  "medication": "Escitalopram",
+  "total_reviews_available": 1747,
+  "reviews_analyzed": 1747,
+  "number_of_topics": 4,
+  "outlier_reviews": 1,
+  "topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "0_lexapro_anxiety_life_feel",
+      "review_count": 1120,
+      "keywords": [
+        "lexapro",
+        "anxiety",
+        "life",
+        "feel",
+        "effects",
+        "depression",
+        "taking",
+        "like"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "1_anxiety_feel_medication_day",
+      "review_count": 437,
+      "keywords": [
+        "anxiety",
+        "feel",
+        "medication",
+        "day",
+        "effects",
+        "like",
+        "depression",
+        "taking"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "2_escitalopram_anxiety_feel_taking",
+      "review_count": 154,
+      "keywords": [
+        "escitalopram",
+        "anxiety",
+        "feel",
+        "taking",
+        "started",
+        "weeks",
+        "depression",
+        "years"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "3_cipralex_anxiety_effects_medication",
+      "review_count": 35,
+      "keywords": [
+        "cipralex",
+        "anxiety",
+        "effects",
+        "medication",
+        "started",
+        "life",
+        "taking",
+        "5mg"
+      ]
+    }
+  ],
+  "model": "BERTopic with all-MiniLM-L6-v2",
+  "note": "Topics represent recurring language patterns in patient-reported reviews. They are exploratory themes, not verified clinical findings."
+}

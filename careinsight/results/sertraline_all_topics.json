@@ -1,0 +1,71 @@
+{
+  "medication": "Sertraline",
+  "total_reviews_available": 1868,
+  "reviews_analyzed": 1868,
+  "number_of_topics": 4,
+  "outlier_reviews": 0,
+  "topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "0_zoloft_anxiety_feel_taking",
+      "review_count": 951,
+      "keywords": [
+        "zoloft",
+        "anxiety",
+        "feel",
+        "taking",
+        "started",
+        "life",
+        "effects",
+        "depression"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "1_feel_anxiety_medication_depression",
+      "review_count": 494,
+      "keywords": [
+        "feel",
+        "anxiety",
+        "medication",
+        "depression",
+        "taking",
+        "effects",
+        "life",
+        "like"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "2_sertraline_anxiety_feel_weeks",
+      "review_count": 401,
+      "keywords": [
+        "sertraline",
+        "anxiety",
+        "feel",
+        "weeks",
+        "depression",
+        "started",
+        "taking",
+        "felt"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "3_pmdd_zoloft_pms_years",
+      "review_count": 22,
+      "keywords": [
+        "pmdd",
+        "zoloft",
+        "pms",
+        "years",
+        "period",
+        "symptoms",
+        "days",
+        "month"
+      ]
+    }
+  ],
+  "model": "BERTopic with all-MiniLM-L6-v2",
+  "note": "Topics represent recurring language patterns in patient-reported reviews. They are exploratory themes, not verified clinical findings."
+}

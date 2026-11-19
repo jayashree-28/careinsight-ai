@@ -3,6 +3,7 @@ import pandas as pd
 from bertopic import BERTopic
 from sentence_transformers import SentenceTransformer
 import plotly.express as px
+from umap import UMAP
 
 def load_reviews(filepath: str, n_samples: int = 500) -> list:
     """
@@ -39,10 +40,19 @@ def extract_topics(reviews: list) -> tuple:
         min_df=2,
         ngram_range=(1, 2)
     )
+
+    umap_model = UMAP(
+        n_neighbors=15,
+        n_components=5,
+        min_dist=0.0,
+        metric="cosine",
+        random_state=42,
+    )
     
     # Create BERTopic model with better settings
     topic_model = BERTopic(
         embedding_model=embedding_model,
+        umap_model=umap_model,
         vectorizer_model=vectorizer_model,
         nr_topics="auto",
         min_topic_size=10,

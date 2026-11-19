@@ -1,0 +1,86 @@
+{
+  "medication": "Sertraline",
+  "total_reviews_available": 1000,
+  "reviews_analyzed": 1000,
+  "number_of_topics": 5,
+  "outlier_reviews": 43,
+  "topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "0_zoloft_anxiety_feel_started",
+      "review_count": 458,
+      "keywords": [
+        "zoloft",
+        "anxiety",
+        "feel",
+        "started",
+        "taking",
+        "panic",
+        "effects",
+        "life"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "1_feel_medication_anxiety_depression",
+      "review_count": 238,
+      "keywords": [
+        "feel",
+        "medication",
+        "anxiety",
+        "depression",
+        "life",
+        "day",
+        "effects",
+        "like"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "2_sertraline_anxiety_feel_weeks",
+      "review_count": 222,
+      "keywords": [
+        "sertraline",
+        "anxiety",
+        "feel",
+        "weeks",
+        "started",
+        "depression",
+        "taking",
+        "felt"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "3_ocd_zoloft_time_obsessive",
+      "review_count": 27,
+      "keywords": [
+        "ocd",
+        "zoloft",
+        "time",
+        "obsessive",
+        "thoughts",
+        "anxiety",
+        "life",
+        "depression"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "4_pmdd_zoloft_symptoms_pms",
+      "review_count": 12,
+      "keywords": [
+        "pmdd",
+        "zoloft",
+        "symptoms",
+        "pms",
+        "years",
+        "stop",
+        "months",
+        "days"
+      ]
+    }
+  ],
+  "model": "BERTopic with all-MiniLM-L6-v2",
+  "note": "Topics represent recurring language patterns in patient-reported reviews. They are exploratory themes, not verified clinical findings."
+}

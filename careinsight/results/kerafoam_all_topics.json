@@ -1,0 +1,10 @@
+{
+  "medication": "Kerafoam",
+  "total_reviews_available": 1,
+  "reviews_analyzed": 1,
+  "number_of_topics": 0,
+  "outlier_reviews": null,
+  "topics": [],
+  "model": "BERTopic with all-MiniLM-L6-v2",
+  "note": "Topic modeling was skipped because only 1 reviews were available. At least 20 reviews are required."
+}

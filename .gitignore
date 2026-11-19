@@ -39,3 +39,6 @@ tests/runs/
 
 # Local test output
 baseline_test_results.txt
+
+/careinsight/.adk/
+/careinsight/agent.py.backup

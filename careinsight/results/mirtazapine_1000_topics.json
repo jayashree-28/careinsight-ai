@@ -1,0 +1,71 @@
+{
+  "medication": "Mirtazapine",
+  "total_reviews_available": 727,
+  "reviews_analyzed": 727,
+  "number_of_topics": 4,
+  "outlier_reviews": 46,
+  "topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "0_mirtazapine_anxiety_sleep_depression",
+      "review_count": 261,
+      "keywords": [
+        "mirtazapine",
+        "anxiety",
+        "sleep",
+        "depression",
+        "taking",
+        "night",
+        "feel",
+        "months"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "1_sleep_anxiety_night_taking",
+      "review_count": 183,
+      "keywords": [
+        "sleep",
+        "anxiety",
+        "night",
+        "taking",
+        "medication",
+        "day",
+        "weight",
+        "depression"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "2_remeron_sleep_weight_anxiety",
+      "review_count": 131,
+      "keywords": [
+        "remeron",
+        "sleep",
+        "weight",
+        "anxiety",
+        "depression",
+        "ve",
+        "years",
+        "taking"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "3_sleep_like_took_life",
+      "review_count": 106,
+      "keywords": [
+        "sleep",
+        "like",
+        "took",
+        "life",
+        "night",
+        "hours",
+        "feel",
+        "slept"
+      ]
+    }
+  ],
+  "model": "BERTopic with all-MiniLM-L6-v2",
+  "note": "Topics represent recurring language patterns in patient-reported reviews. They are exploratory themes, not verified clinical findings."
+}

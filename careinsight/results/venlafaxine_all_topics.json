@@ -1,0 +1,71 @@
+{
+  "medication": "Venlafaxine",
+  "total_reviews_available": 1338,
+  "reviews_analyzed": 1338,
+  "number_of_topics": 4,
+  "outlier_reviews": 0,
+  "topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "0_effexor_anxiety_depression_years",
+      "review_count": 669,
+      "keywords": [
+        "effexor",
+        "anxiety",
+        "depression",
+        "years",
+        "taking",
+        "life",
+        "day",
+        "feel"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "1_medication_drug_effects_anxiety",
+      "review_count": 430,
+      "keywords": [
+        "medication",
+        "drug",
+        "effects",
+        "anxiety",
+        "day",
+        "feel",
+        "dose",
+        "depression"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "2_venlafaxine_anxiety_years_taking",
+      "review_count": 181,
+      "keywords": [
+        "venlafaxine",
+        "anxiety",
+        "years",
+        "taking",
+        "effects",
+        "day",
+        "depression",
+        "like"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "3_flashes_hot_hot flashes_37",
+      "review_count": 58,
+      "keywords": [
+        "flashes",
+        "hot",
+        "hot flashes",
+        "37",
+        "effexor",
+        "night",
+        "did",
+        "day"
+      ]
+    }
+  ],
+  "model": "BERTopic with all-MiniLM-L6-v2",
+  "note": "Topics represent recurring language patterns in patient-reported reviews. They are exploratory themes, not verified clinical findings."
+}

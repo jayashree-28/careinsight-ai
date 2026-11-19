@@ -1,0 +1,41 @@
+{
+  "medication": "ibuprofen",
+  "total_reviews_available": 104,
+  "reviews_analyzed": 104,
+  "number_of_topics": 2,
+  "outlier_reviews": 57,
+  "topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "0_good_works_like_taking",
+      "review_count": 34,
+      "keywords": [
+        "good",
+        "works",
+        "like",
+        "taking",
+        "advil",
+        "time",
+        "pain",
+        "better"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "1_ibuprofen_pain_taking_taking ibuprofen",
+      "review_count": 13,
+      "keywords": [
+        "ibuprofen",
+        "pain",
+        "taking",
+        "taking ibuprofen",
+        "works",
+        "stomach",
+        "ve",
+        "pains"
+      ]
+    }
+  ],
+  "model": "BERTopic with all-MiniLM-L6-v2",
+  "note": "Topics represent recurring language patterns in patient-reported reviews. They are exploratory themes, not verified clinical findings."
+}

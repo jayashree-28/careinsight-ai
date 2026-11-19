@@ -1,173 +1,238 @@
-# 🏥 CareInsight AI — Patient Feedback Intelligence Platform
+# CareInsight AI — Patient Medication Experience Intelligence Platform
 
-[![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://python.org)
-[![Gradio](https://img.shields.io/badge/Gradio-UI-orange.svg)](https://gradio.app)
-[![HuggingFace](https://img.shields.io/badge/HuggingFace-Models-yellow.svg)](https://huggingface.co)
-[![Tests](https://img.shields.io/badge/Tests-29%20passing-brightgreen.svg)](tests/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+CareInsight AI is a multi-agent AI application that analyzes patient-reported medication reviews alongside official FDA medication labeling. It combines retrieval, sentiment analysis, topic modeling, report generation, and evidence validation to produce structured medication experience reports.
 
-> AI-powered patient feedback analyser using NLP — sentiment analysis, 
-> topic modelling, and side-by-side medical vs general AI summarisation.
+The project demonstrates how multi-agent orchestration, external tools, NLP models, and automated testing can work together in a healthcare-related AI application.
 
----
+## Project Overview
 
-## 🎯 What it does
+CareInsight AI brings together two types of information:
 
-CareInsight AI transforms unstructured patient reviews into actionable 
-clinical insights using three NLP techniques:
+- **Patient-reported information:** Public medication reviews describing individual experiences.
+- **Official medication information:** FDA drug labeling retrieved through the openFDA API.
 
-| Feature | Model | What it produces |
+The application keeps these evidence sources separate. Patient reviews represent subjective experiences and are not proof that a medication caused a particular outcome.
+
+## Key Features
+
+| Feature | Technology | Purpose |
 |---|---|---|
-| Sentiment Analysis | RoBERTa | POSITIVE / NEUTRAL / NEGATIVE + confidence |
-| Topic Modelling | BERTopic | Automatically discovered clinical topics |
-| General Summary | DistilBART | Plain-English summary |
-| Medical Summary | Falconsai Medical | Clinically-aware summary |
+| FDA medication retrieval | openFDA API + MCP | Retrieve official medication labeling |
+| Agent orchestration | Google ADK | Coordinate the multi-agent workflow |
+| Sentiment analysis | CardiffNLP RoBERTa | Classify review sentiment |
+| Topic modeling | BERTopic | Discover recurring themes in reviews |
+| Text embeddings | Sentence Transformers | Represent reviews for topic modeling |
+| Report generation | Google Gemini | Generate structured analysis reports |
+| Evidence validation | Critic Agent | Check report consistency and evidence support |
+| Interactive interface | Gradio | Provide browser-based access |
+| Data quality | Great Expectations | Validate dataset quality |
+| Automated testing | pytest | Test application components |
 
----
+## Multi-Agent Architecture
 
-## 🚀 Try it live
+The medication analysis workflow uses a sequential agent architecture.
 
-> **[🤗 Open in Hugging Face Spaces](https://huggingface.co/spaces/JayaBV/careinsight-ai)**
+1. **Retrieval Agent**
+   - Retrieves patient medication reviews.
+   - Calls the medication information MCP tool.
+   - Retrieves official FDA labeling through openFDA.
 
----
+2. **Sentiment Agent**
+   - Analyzes patient review sentiment.
+   - Reports positive, negative, and neutral sentiment patterns.
 
-## 📊 Demo
+3. **Topic Agent**
+   - Uses BERTopic to identify recurring themes.
+   - Organizes reviews into topic groups.
 
-### Tab 1 — Paste your own patient reviews
-![Demo Tab 1](docs/demo_tab1.png)
+4. **Report Agent**
+   - Combines the analysis results.
+   - Produces a structured medication experience report.
+   - Distinguishes FDA labeling from patient-reported experiences.
 
-### Tab 2 — Analyse by medical condition
-![Demo Tab 2](docs/demo_tab2.png)
+5. **Critic Agent**
+   - Validates report consistency and evidence references.
+   - Checks structural and numerical consistency.
+   - Reports validation errors and warnings.
 
----
+The root agent delegates the medication analysis task to the sequential workflow.
 
-## 🏗️ Project structure
-```
+### MCP Integration
+
+The Retrieval Agent uses an MCP server to access medication information.
+
+The MCP server:
+- Calls the openFDA Drug Label API.
+- Retrieves medication labeling information.
+- Returns fields such as indications, warnings, adverse reactions, and interactions.
+- Handles API errors and missing results.
+
+The MCP server is started automatically by the Retrieval Agent through a standard input/output connection. It does not need to be started manually.
+
+## Application Interfaces
+
+CareInsight AI includes three ways to use the project.
+
+| Application | Command | Description |
+|---|---|---|
+| ADK command-line workflow | `uv run adk run careinsight` | Run the multi-agent medication analysis |
+| ADK Gradio interface | `uv run python -m careinsight.ui` | Use the multi-agent workflow through a browser |
+| Standalone NLP interface | `uv run python app.py` | Analyze reviews using the original NLP pipeline |
+
+These interfaces serve different purposes. The standalone NLP interface is separate from the Google ADK multi-agent workflow.
+
+## Example Results
+
+The following results were produced by the multi-agent workflow.
+
+### Mirtazapine
+
+| Metric | Result |
+|---|---:|
+| Patient reviews analyzed | 727 |
+| Average rating | 7.18 / 10 |
+| Positive sentiment | 305 (41.95%) |
+| Negative sentiment | 280 (38.51%) |
+| Neutral sentiment | 142 (19.53%) |
+| Topics identified | 4 |
+| Topic outliers | 46 |
+| Critic validation | APPROVED |
+| Validation checks passed | 14 / 14 |
+
+### Sertraline
+
+| Metric | Result |
+|---|---:|
+| Patient reviews analyzed | 1,868 |
+| Average rating | 7.45 / 10 |
+| Negative sentiment | 837 (44.81%) |
+| Positive sentiment | 734 (39.29%) |
+| Neutral sentiment | 297 (15.90%) |
+| Topics identified | 4 |
+| Topic outliers | 0 |
+| Critic validation | APPROVED |
+| Validation checks passed | 14 / 14 |
+
+These examples demonstrate that numerical ratings and text-based sentiment are different measures. For example, Sertraline had an average rating of 7.45/10 while 44.81% of analyzed reviews were classified as negative.
+
+The Critic Agent's approval indicates that the configured validation checks passed. It does not establish clinical accuracy or independently verify every medical claim.
+
+## Dataset
+
+The project uses the Drugs.com patient medication review dataset, distributed through Kaggle.
+
+Expected local dataset files:
+
+- `data/drugsComTrain_raw.csv`
+- `data/drugsComTest_raw.csv`
+
+The dataset contains patient-reported reviews and associated information such as medication name, medical condition, review text, rating, date, and useful count.
+
+The multi-agent workflow and standalone NLP interface use different analysis paths. Refer to the User Guide for details.
+
+## Project Structure
+
+```text
 careinsight-ai/
+├── careinsight/
+│   ├── agent.py
+│   ├── retrieval_agent.py
+│   ├── medication_mcp_server.py
+│   ├── sentiment_agent.py
+│   ├── topic_agent.py
+│   ├── report_agent.py
+│   ├── critic_agent.py
+│   ├── critic_tools.py
+│   ├── retrieval.py
+│   ├── sentiment_tools.py
+│   ├── topic_tools.py
+│   ├── report_tools.py
+│   └── ui.py
 ├── src/
-│ ├── sentiment.py # RoBERTa sentiment analysis
-│ ├── topics.py # BERTopic topic modelling
-│ ├── summariser.py # DistilBART general summarisation
-│ ├── medgemma.py # Medical model summarisation
-│ └── pipeline.py # LangChain orchestration
+│   ├── sentiment.py
+│   ├── topics.py
+│   ├── summariser.py
+│   ├── medgemma.py
+│   └── pipeline.py
+├── rag/
+├── data/
 ├── tests/
-│ ├── test_sentiment.py # 7 sentiment tests
-│ ├── test_topics.py # 7 topic tests
-│ ├── test_pipeline.py # 6 pipeline tests
-│ └── test_data_quality.py # 9 data quality tests
-├── data/ # UCI Drug Review dataset
-├── app.py # Gradio web application
-└── requirements.txt # All dependencies
-
----
+├── gx/
+├── notebooks/
+├── app.py
+├── requirements.txt
+├── README.md
+└── docs/
+    └── USER_GUIDE.md
 ```
 
-## ⚙️ Installation
+## Installation
+
+### Requirements
+
+- Python 3.12 (tested with Python 3.12.15)
+- Google Gemini API key
+- Dependencies listed in `requirements.txt`
+- Dataset files in the `data/` directory
+
+The tested environment includes:
+
+| Package | Version |
+|---|---:|
+| google-adk | 2.14.0 |
+| google-genai | 2.34.0 |
+| mcp | 2.3.0 |
+
+Make sure these packages are included in `requirements.txt`:
+
+```text
+google-adk==2.14.0
+google-genai==2.34.0
+mcp==2.3.0
+```
+
+For installation and configuration instructions, see [docs/USER_GUIDE.md](docs/USER_GUIDE.md).
+
+## Running Tests
+
+Run the test suite:
 
 ```bash
-# Clone the repo
-git clone https://github.com/jayashree-28/careinsight-ai.git
-cd careinsight-ai
-
-# Create conda environment
-conda create -n careinsight python=3.13 -y
-conda activate careinsight
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Download dataset from Kaggle
-kaggle datasets download -d jessicali9530/kuc-hackathon-winter-2018 \
-  -p data/ --unzip
+uv run pytest tests/ -v
 ```
 
----
+**Latest recorded test result: 48 passed.**
 
-## 🖥️ Run locally
+The tests cover:
+- Critic Agent validation
+- Dataset and data quality checks
+- NLP pipeline behavior
+- Sentiment analysis
+- Topic modeling
 
-```bash
-conda activate careinsight
-python3 app.py
-```
+## Important Limitations
 
-Open browser at: `http://localhost:7860`
+- Patient reviews are subjective and may contain incomplete or inaccurate information.
+- Sentiment classifications represent model predictions, not verified clinical assessments.
+- Topic modeling identifies patterns in text; topics are not established medical diagnoses.
+- FDA labeling and patient reviews are different evidence sources and should not be treated as interchangeable.
+- The Critic Agent validates configured report consistency and evidence requirements; it does not guarantee clinical correctness.
+- The application does not establish medication causality and is not intended to provide medical advice.
+- Some topic results may be loaded from cached analysis results rather than freshly trained during every run.
 
----
+## Learning Outcomes
 
-## 🧪 Run tests
+This project demonstrates practical experience with:
 
-```bash
-python3 -m pytest tests/ -v
-```
+- Multi-agent system design and orchestration.
+- Google ADK and Gemini integration.
+- Model Context Protocol (MCP) and external API integration.
+- NLP sentiment analysis and topic modeling.
+- Evidence-aware report generation.
+- Critic Agent design and validation.
+- Automated testing and data quality validation.
+- Gradio application development.
 
+## License
 
----
-
-## 🤖 Models used
-```
-
-| Model | Size | Purpose |
-|---|---|---|
-| cardiffnlp/twitter-roberta-base-sentiment | 500MB | Sentiment classification |
-| all-MiniLM-L6-v2 | 90MB | Sentence embeddings for BERTopic |
-| sshleifer/distilbart-cnn-12-6 | 1.2GB | General summarisation |
-| Falconsai/medical_summarization | 242MB | Medical summarisation |
-
----
-```
-
-## 📈 Dataset
-
-**UCI Drug Review Dataset** — 161,297 real patient reviews
-- Source: Kaggle
-- Columns: drugName, condition, review, rating, date, usefulCount
-- Conditions covered: Depression, Anxiety, Pain, Birth Control and more
-
----
-
-## 🔬 Key findings — General vs Medical AI
-
-| Condition | General Model | Medical Model |
-|---|---|---|
-| Depression | Surface-level mood summary | Specific drug names + side effect timeline |
-| Anxiety | General improvement noted | Drug combinations (Paxil, Lexapro) + clinical terms |
-| Pain | Patient quotes about relief | Injury history + medication escalation path |
-
----
-
-## 🔮 Future enhancements
-
-- [ ] MedGemma integration (pending HF approval)
-- [ ] LangChain RAG for grounded clinical summaries
-- [ ] Real-time sentiment dashboard
-- [ ] Drift monitoring with Evidently AI
-- [ ] Multilingual patient feedback support
-- [ ] EHR API integration
-
----
-
-## 🛠️ Tech stack
-
-Python 3.13 — Core language
-Hugging Face — Pre-trained AI models
-BERTopic — Topic modelling
-LangChain — Pipeline orchestration
-Gradio — Web UI
-Plotly — Interactive charts
-pytest — Unit testing
-Great Expectations — Data quality validation
-
-
----
-
-## 👩‍💻 About
-
-Built by an SDET transitioning into AI/ML Engineering.
-This project demonstrates how testing expertise transfers 
-directly into AI system validation.
-
----
-
-## 📄 License
-
-MIT License — free to use and extend.
+Refer to the repository's license file for usage and redistribution terms.
