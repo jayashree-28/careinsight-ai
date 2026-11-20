@@ -1,19 +1,19 @@
 # CareInsight AI — Patient Medication Experience Intelligence Platform
 
-CareInsight AI is a multi-agent AI application that analyzes patient-reported medication reviews alongside official FDA medication labeling. It combines retrieval, sentiment analysis, topic modeling, report generation, and evidence validation to produce structured medication experience reports.
+CareInsight AI is a multi-agent AI application that analyzes patient-reported medication reviews alongside official FDA medication labeling. It combines information retrieval, sentiment analysis, topic modeling, report generation, and evidence validation to produce structured medication experience reports.
 
 The project demonstrates how multi-agent orchestration, external tools, NLP models, and automated testing can work together in a healthcare-related AI application.
 
 ## Project Overview
 
-CareInsight AI brings together two types of information:
+CareInsight AI brings together two distinct evidence sources:
 
 - **Patient-reported information:** Public medication reviews describing individual experiences.
 - **Official medication information:** FDA drug labeling retrieved through the openFDA API.
 
-The application keeps these evidence sources separate. Patient reviews represent subjective experiences and are not proof that a medication caused a particular outcome.
+The application keeps these sources separate. Patient reviews represent individual experiences and are not proof that a medication caused a particular outcome.
 
-## Key Features
+## Key Features and Technologies
 
 | Feature | Technology | Purpose |
 |---|---|---|
@@ -32,34 +32,34 @@ The application keeps these evidence sources separate. Patient reviews represent
 
 The medication analysis workflow uses a sequential agent architecture.
 
-1. **Retrieval Agent**
-   - Retrieves patient medication reviews.
-   - Calls the medication information MCP tool.
-   - Retrieves official FDA labeling through openFDA.
+### 1. Retrieval Agent
+- Retrieves patient medication reviews.
+- Calls the medication information MCP tool.
+- Retrieves official FDA labeling through openFDA.
 
-2. **Sentiment Agent**
-   - Analyzes patient review sentiment.
-   - Reports positive, negative, and neutral sentiment patterns.
+### 2. Sentiment Agent
+- Analyzes patient review sentiment.
+- Reports positive, negative, and neutral sentiment patterns.
 
-3. **Topic Agent**
-   - Uses BERTopic to identify recurring themes.
-   - Organizes reviews into topic groups.
+### 3. Topic Agent
+- Uses BERTopic to identify recurring themes.
+- Organizes reviews into topic groups.
 
-4. **Report Agent**
-   - Combines the analysis results.
-   - Produces a structured medication experience report.
-   - Distinguishes FDA labeling from patient-reported experiences.
+### 4. Report Agent
+- Combines the analysis results.
+- Produces a structured medication experience report.
+- Distinguishes FDA labeling from patient-reported experiences.
 
-5. **Critic Agent**
-   - Validates report consistency and evidence references.
-   - Checks structural and numerical consistency.
-   - Reports validation errors and warnings.
+### 5. Critic Agent
+- Validates report consistency and evidence references.
+- Checks structural and numerical consistency.
+- Reports validation errors and warnings.
 
 The root agent delegates the medication analysis task to the sequential workflow.
 
-### MCP Integration
+## MCP Integration
 
-The Retrieval Agent uses an MCP server to access medication information.
+The Retrieval Agent uses a Model Context Protocol (MCP) server to access medication information.
 
 The MCP server:
 - Calls the openFDA Drug Label API.
@@ -79,7 +79,7 @@ CareInsight AI includes three ways to use the project.
 | ADK Gradio interface | `uv run python -m careinsight.ui` | Use the multi-agent workflow through a browser |
 | Standalone NLP interface | `uv run python app.py` | Analyze reviews using the original NLP pipeline |
 
-These interfaces serve different purposes. The standalone NLP interface is separate from the Google ADK multi-agent workflow.
+The standalone NLP interface is separate from the Google ADK multi-agent workflow. These interfaces serve different purposes.
 
 ## Example Results
 
@@ -123,18 +123,26 @@ The project uses the Drugs.com patient medication review dataset, distributed th
 
 Expected local dataset files:
 
-- `data/drugsComTrain_raw.csv`
-- `data/drugsComTest_raw.csv`
+```text
+data/
+├── drugsComTrain_raw.csv
+└── drugsComTest_raw.csv
+```
+
+Obtain the dataset from the Kaggle source used for this project and place the files in the `data/` directory.
 
 The dataset contains patient-reported reviews and associated information such as medication name, medical condition, review text, rating, date, and useful count.
 
-The multi-agent workflow and standalone NLP interface use different analysis paths. Refer to the User Guide for details.
+**Dataset availability:** The dataset files are expected locally and are not assumed to be included in this repository. Check the dataset's license and terms before redistributing it.
+
+The multi-agent workflow and standalone NLP interface use different analysis paths. Refer to the [User Guide](docs/USER_GUIDE.md) for details.
 
 ## Project Structure
 
 ```text
 careinsight-ai/
 ├── careinsight/
+│   ├── results/
 │   ├── agent.py
 │   ├── retrieval_agent.py
 │   ├── medication_mcp_server.py
@@ -159,25 +167,27 @@ careinsight-ai/
 ├── tests/
 ├── gx/
 ├── notebooks/
+├── docs/
+│   └── USER_GUIDE.md
 ├── app.py
 ├── requirements.txt
-├── README.md
-└── docs/
-    └── USER_GUIDE.md
+├── .gitignore
+└── README.md
 ```
 
-## Installation
+## Installation and Configuration
 
 ### Requirements
 
-- Python 3.12 (tested with Python 3.12.15)
+- Python 3.12
+- [uv](https://docs.astral.sh/uv/)
 - Google Gemini API key
 - Dependencies listed in `requirements.txt`
-- Dataset files in the `data/` directory
+- Dataset files in the `data/` directory, when required by the selected application path
 
-The tested environment includes:
+The tested environment included:
 
-| Package | Version |
+| Package | Tested version |
 |---|---:|
 | google-adk | 2.14.0 |
 | google-genai | 2.34.0 |
@@ -191,7 +201,61 @@ google-genai==2.34.0
 mcp==2.3.0
 ```
 
-For installation and configuration instructions, see [docs/USER_GUIDE.md](docs/USER_GUIDE.md).
+### 1. Clone the repository
+
+```bash
+git clone YOUR_GITHUB_REPOSITORY_URL
+cd careinsight-ai
+```
+
+Replace the placeholder with your actual repository URL.
+
+### 2. Create and activate a virtual environment
+
+```bash
+uv venv
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+uv pip install -r requirements.txt
+```
+
+### 4. Configure the API key
+
+Create a `.env` file in the `careinsight/` directory:
+
+```env
+GOOGLE_API_KEY=your_google_api_key
+```
+
+Do not commit your actual `.env` file or API key to GitHub.
+
+### 5. Run the application
+
+Run the multi-agent workflow through the ADK command line:
+
+```bash
+uv run adk run careinsight
+```
+
+Or launch the multi-agent Gradio interface:
+
+```bash
+uv run python -m careinsight.ui
+```
+
+The Retrieval Agent automatically starts the MCP server when needed.
+
+To run the standalone NLP interface:
+
+```bash
+uv run python app.py
+```
+
+For additional setup and configuration details, see [docs/USER_GUIDE.md](docs/USER_GUIDE.md).
 
 ## Running Tests
 
@@ -232,7 +296,3 @@ This project demonstrates practical experience with:
 - Critic Agent design and validation.
 - Automated testing and data quality validation.
 - Gradio application development.
-
-## License
-
-Refer to the repository's license file for usage and redistribution terms.
